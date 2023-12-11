@@ -121,7 +121,7 @@
       </item>
     </group>
     <group name="Table">
-      <item class="Frontend.MyTable" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="true" auto-create-binding="false" can-attach-label="false" is-container="true">
+      <item class="Frontend.MyTablePanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="true" auto-create-binding="false" can-attach-label="false" is-container="true">
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
     </group>

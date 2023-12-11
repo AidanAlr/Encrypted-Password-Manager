@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="new_file" uuid="0dd8f3ad-e209-4277-8652-3c0a0fab47e7">
+    <data-source source="LOCAL" name="userdata [2]" uuid="3e2b9787-6558-4bf2-b1a0-850a85e6f627">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/new_file</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
-    <data-source source="LOCAL" name="userdata" uuid="788039fe-54fa-434d-bbac-c5a07c13c0fb">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\IntelliJ IDEA Ultimate\Projects\PM\src\main\resources\userdata</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\IntelliJ IDEA Ultimate\Projects\PM\userdata</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

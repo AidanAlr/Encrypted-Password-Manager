@@ -10,14 +10,24 @@ import java.util.ArrayList;
 
 
 public class DatabaseManager {
+    public static String filename = "userdata";
 
-    public Connection sqlConnection = null;
+    public static Connection sqlConnection;
 
-    public DatabaseManager(String filename) throws SQLException{
+    static {
         try {
             sqlConnection = DriverManager.getConnection("jdbc:sqlite:" + filename);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public DatabaseManager() throws SQLException{
+        try {
+            if (sqlConnection != null){
             System.out.println("Connected to " + filename);
             this.createTable();
+            }
 
         }
         catch (SQLException e) {
@@ -45,7 +55,7 @@ public class DatabaseManager {
 
     public void addNewPassword(Record record) throws SQLException {
         String query = "INSERT INTO passwords (account, username, password) VALUES (?, ?, ?)";
-        try (PreparedStatement insert = this.sqlConnection.prepareStatement(query)) {
+        try (PreparedStatement insert = sqlConnection.prepareStatement(query)) {
             insert.setString(1, record.getAccount());
             insert.setString(2, record.getUserName());
             insert.setString(3, record.getPassword());
@@ -63,8 +73,9 @@ public class DatabaseManager {
 
         String query = "SELECT * from passwords where username = ?";
 
-        PreparedStatement getPassword = this.sqlConnection.prepareStatement(query);
+        PreparedStatement getPassword = sqlConnection.prepareStatement(query);
         getPassword.setString(1, userName);
+
         results = getPassword.executeQuery();
 
         String name = results.getString("USERNAME");
@@ -75,27 +86,31 @@ public class DatabaseManager {
         return new Record(account, userName, password);
     }
 
-    public ArrayList<Record> getPasswords() throws SQLException {
+    public ArrayList<Record> getAllRecords() throws SQLException {
         ArrayList<Record> passwordsArrayList = new ArrayList<>();
         String query = "SELECT * FROM passwords";
-        PreparedStatement getPasswords = this.sqlConnection.prepareStatement(query);
+        PreparedStatement getPasswords = sqlConnection.prepareStatement(query);
         ResultSet results = getPasswords.executeQuery();
+        System.out.println(results);
 
         while (results.next()) {
             String account = results.getString("ACCOUNT");
             String name = results.getString("USERNAME");
             String password = results.getString("PASSWORD");
-            Record row = new Record(account,name, password);
+            Record row = new Record(account, name, password);
+            System.out.println(row);
+
             passwordsArrayList.add(row);
         }
-        getPasswords.closeOnCompletion();
+
         return passwordsArrayList;
     }
+
 
     public void storePasswords(ArrayList<Record> records) throws SQLException {
         PreparedStatement storePasswords;
         String query = "INSERT INTO passwords (account, username,password) VALUES(?, ?, ?)";
-        storePasswords = this.sqlConnection.prepareStatement(query);
+        storePasswords = sqlConnection.prepareStatement(query);
         for (Record p : records) {
             storePasswords.setString(1, p.getAccount());
             storePasswords.setString(2, p.getUserName());
@@ -106,19 +121,19 @@ public class DatabaseManager {
             storePasswords.close();
     }
 
-    public void removePassword(String userName) throws SQLException {
-        String query = "DELETE FROM passwords where username= ?";
-        PreparedStatement removePassword = this.sqlConnection.prepareStatement(query);
+    public void removePassword(String account) throws SQLException {
+        String query = "DELETE FROM passwords where account= ?";
+        PreparedStatement removePassword = sqlConnection.prepareStatement(query);
 
-        removePassword.setString(1, userName);
+        removePassword.setString(1, account);
         removePassword.executeUpdate();
         removePassword.close();
     }
 
-    public void renamePassword(String oldName, String newName) throws SQLException {
+    public void renameRecord(String oldName, String newName) throws SQLException {
         PreparedStatement renamePassword;
-        String query = "UPDATE passwords set username = ? where username = ?";
-        renamePassword = this.sqlConnection.prepareStatement(query);
+        String query = "UPDATE passwords set account = ? where account = ?";
+        renamePassword = sqlConnection.prepareStatement(query);
         renamePassword.setString(1, newName);
         renamePassword.setString(2, oldName);
         renamePassword.executeUpdate();
@@ -126,7 +141,7 @@ public class DatabaseManager {
     }
 
     public void clearPasswords() throws SQLException {
-        PreparedStatement clear = this.sqlConnection.prepareStatement("DELETE FROM passwords");
+        PreparedStatement clear = sqlConnection.prepareStatement("DELETE FROM passwords");
         clear.executeUpdate();
         clear.close();
     }
@@ -134,7 +149,7 @@ public class DatabaseManager {
     public void updatePassword(Record newP) throws SQLException {
         PreparedStatement update;
         String query = "UPDATE passwords set password = ? where username = ? and account = ?";
-        update = this.sqlConnection.prepareStatement(query);
+        update = sqlConnection.prepareStatement(query);
         update.setString(1, newP.getPassword());
         update.setString(2, newP.getUserName());
         update.setString(3, newP.getAccount());
@@ -143,7 +158,7 @@ public class DatabaseManager {
     }
 
     public void closeDatabase() throws SQLException {
-        this.sqlConnection.close();
+        sqlConnection.close();
     }
 
 }
