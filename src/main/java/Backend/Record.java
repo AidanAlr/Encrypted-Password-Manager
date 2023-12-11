@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Objects;
 
 
-public class Password {
+public class Record {
 
     private static final char[] ALPHABET
             = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
@@ -62,7 +62,7 @@ public class Password {
         this.userName = name;
     }
 
-    public Password(String userName, String password, String account) throws IllegalArgumentException{
+    public Record(String userName, String password, String account) throws IllegalArgumentException{
         if (userName.isEmpty() || password.isEmpty() || account.isEmpty()) {
             throw new IllegalArgumentException("Blank fields are not allowed");
         }
@@ -73,7 +73,7 @@ public class Password {
         this.account = account;
     }
 
-    public Password generate(int size, String userName, String account) throws IllegalArgumentException {
+    public Record generate(int size, String userName, String account) throws IllegalArgumentException {
         // Check for invalid inputs
         if (userName.isEmpty()) {
             throw new IllegalArgumentException("Username cannot be empty");
@@ -95,7 +95,7 @@ public class Password {
         return this;
     }
 
-    public Password createPassword(String pass, String name) throws IllegalArgumentException {
+    public Record createPassword(String pass, String name) throws IllegalArgumentException {
         name = name.trim();
         pass = pass.trim();
         if (name.isEmpty())
@@ -116,7 +116,7 @@ public class Password {
         return "Account: " + this.getAccount() +", UserName: " + this.getUserName() + ", Password: " + this.getPassword();
     }
 
-    public boolean equals(Password p) {
+    public boolean equals(Record p) {
         return p.password.equals(this.password) && p.userName.equals(this.userName) && p.account.equals(this.account);
     }
 

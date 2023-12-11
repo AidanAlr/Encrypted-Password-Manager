@@ -1,16 +1,16 @@
 package executor;
 
 import Backend.DatabaseManager;
-import Backend.Password;
+import Backend.Record;
 
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        DatabaseManager db = new DatabaseManager("userdata");
+        DatabaseManager db = new DatabaseManager("src/main/resources/userdata");
         System.out.println(db.sqlConnection);
 
-        Password pass = new Password("test", "test", "test");
+        Record pass = new Record("test", "test", "test");
         db.addNewPassword(pass);
 
     }

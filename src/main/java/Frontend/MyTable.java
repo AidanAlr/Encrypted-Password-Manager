@@ -16,17 +16,24 @@ public class MyTable extends JPanel {
 
     private static JTable getjTable() {
         Object[][] data = {
-                {"Account1", "Username1", "Password1", "what"},
-                {"Account2", "Username2", "Password2", "what"},
-                {"Account3", "Username3", "Password3", "what"}
+                {"Account1", "Username1"},
+                {"Account2", "Username2"},
+                {"Account3", "Username3"}
                 // Add more rows as needed
         };
 
         // Column names
-        String[] columnNames = {"Account", "Username", "Password", "Edit"};
+        String[] columnNames = {"Account", "Username"};
 
-        // Create a default table model
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        // Create a custom table model
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make all cells not editable for the second column (Age)
+                return false;
+            }
+        };
+
 
         JTable table = new JTable(model);
         // Add "Edit" button column

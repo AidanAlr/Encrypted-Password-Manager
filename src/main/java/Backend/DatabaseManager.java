@@ -43,12 +43,12 @@ public class DatabaseManager {
         }
     }
 
-    public void addNewPassword(Password password) throws SQLException {
+    public void addNewPassword(Record record) throws SQLException {
         String query = "INSERT INTO passwords (account, username, password) VALUES (?, ?, ?)";
         try (PreparedStatement insert = this.sqlConnection.prepareStatement(query)) {
-            insert.setString(1, password.getAccount());
-            insert.setString(2, password.getUserName());
-            insert.setString(3, password.getPassword());
+            insert.setString(1, record.getAccount());
+            insert.setString(2, record.getUserName());
+            insert.setString(3, record.getPassword());
             insert.executeUpdate();
             System.out.println("Password added");
         } catch (SQLException e) {
@@ -57,7 +57,7 @@ public class DatabaseManager {
 
     }
 
-    public Password getPasswords(String userName) throws SQLException {
+    public Record getPasswords(String userName) throws SQLException {
 
         ResultSet results;
 
@@ -72,31 +72,31 @@ public class DatabaseManager {
         String account = results.getString("ACCOUNT");
 
         getPassword.closeOnCompletion();
-        return new Password(account, userName, password);
+        return new Record(account, userName, password);
     }
 
-    public ArrayList<Password> getPasswords() throws SQLException {
-        ArrayList<Password> passwordsArrayList = new ArrayList<>();
+    public ArrayList<Record> getPasswords() throws SQLException {
+        ArrayList<Record> passwordsArrayList = new ArrayList<>();
         String query = "SELECT * FROM passwords";
         PreparedStatement getPasswords = this.sqlConnection.prepareStatement(query);
         ResultSet results = getPasswords.executeQuery();
 
         while (results.next()) {
             String account = results.getString("ACCOUNT");
-            String name = results.getString("NAME");
+            String name = results.getString("USERNAME");
             String password = results.getString("PASSWORD");
-            Password row = new Password(account,name, password);
+            Record row = new Record(account,name, password);
             passwordsArrayList.add(row);
         }
         getPasswords.closeOnCompletion();
         return passwordsArrayList;
     }
 
-    public void storePasswords(ArrayList<Password> passwords) throws SQLException {
+    public void storePasswords(ArrayList<Record> records) throws SQLException {
         PreparedStatement storePasswords;
         String query = "INSERT INTO passwords (account, username,password) VALUES(?, ?, ?)";
         storePasswords = this.sqlConnection.prepareStatement(query);
-        for (Password p : passwords) {
+        for (Record p : records) {
             storePasswords.setString(1, p.getAccount());
             storePasswords.setString(2, p.getUserName());
             storePasswords.setString(3, p.getPassword());
@@ -131,7 +131,7 @@ public class DatabaseManager {
         clear.close();
     }
 
-    public void updatePassword(Password newP) throws SQLException {
+    public void updatePassword(Record newP) throws SQLException {
         PreparedStatement update;
         String query = "UPDATE passwords set password = ? where username = ? and account = ?";
         update = this.sqlConnection.prepareStatement(query);

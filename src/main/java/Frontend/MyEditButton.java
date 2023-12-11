@@ -18,10 +18,8 @@ public class MyEditButton extends JButton implements TableCellRenderer {
                     // Get account data based on row
                     String accountName = (String) table.getModel().getValueAt(row, 0);
                     String username = (String) table.getModel().getValueAt(row, 1);
-                    String password = (String) table.getModel().getValueAt(row, 2);
 
-                    // Open edit dialog for the selected account
-                    // ... (implement your edit functionality here)
+
                 }
             });
             return this;

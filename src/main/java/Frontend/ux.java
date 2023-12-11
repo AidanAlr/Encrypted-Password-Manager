@@ -5,7 +5,6 @@ import javax.swing.*;
 public class ux {
     private JPanel main;
     private JTextField accountTextField;
-    private JFormattedTextField heading_text;
     private JTextField usernameTextField;
     private JPasswordField passwordPasswordField;
     private JButton submitButton;
