@@ -4,8 +4,6 @@ import Backend.DatabaseManager;
 import Backend.Record;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
@@ -13,85 +11,91 @@ import java.util.ArrayList;
 
 public class MyTablePanel extends JPanel {
 
-    JTextField userName_tf = new JTextField("Username...");
-    JTextField account_tf = new JTextField("Account...");
-
+    private final DatabaseManager db = new DatabaseManager();
     public MyTablePanel() throws SQLException {
         super();
-
-        // Set the layout manager to BorderLayout
-        setLayout(new BorderLayout());
-
-        // Create a panel for the text fields
-        JPanel textFieldsPanel = new JPanel();
-        textFieldsPanel.setLayout(new FlowLayout()); // FlowLayout for side-by-side alignment
-        textFieldsPanel.add(account_tf);
-        textFieldsPanel.add(userName_tf);
-
-        // Add the text fields panel to the top (North) of the main panel
-        add(textFieldsPanel, BorderLayout.NORTH);
-
-        // Create the table
-        JTable table = getjTable();
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Add the scroll panel to the center of the main panel
-        add(scrollPane, BorderLayout.CENTER);
-    }
-    private JTable getjTable() throws SQLException {
-        // Getting the records from the db
-        // connection is static, so you are able to instantiate db managers wherever
-        DatabaseManager db = new DatabaseManager();
-        ArrayList<Record> recordList = db.getAllRecords();
-        System.out.print(recordList);
-
-        // Creating our 2d array for the table
-        String[][] data = new String[recordList.size()][2];
-        // Populate the 2D array with Account and Usernames from record
-        for (int i = 0; i < recordList.size(); i++) {
-            data[i][0] = recordList.get(i).getAccount();
-            data[i][1] = recordList.get(i).getUserName();
-            System.out.println(recordList.get(i).getAccount());
+        // Try to create and add the table to the main panel
+        try {
+            setLayout(new BorderLayout());
+            JTable table = getjTable();
+            JScrollPane scrollPane = new JScrollPane(table);
+            add(scrollPane, BorderLayout.CENTER);
+        } catch (SQLException ex) {
+            // Show error message if there's an issue loading data
+            JOptionPane.showMessageDialog(this, "Error loading data: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
 
-        // Column names
-        String[] columnNames = {"Account", "Username"};
+    private JTable getjTable() throws SQLException {
+        JTable table = new JTable(refreshTableData());
 
-        // Create a custom table model
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        // Add a selection listener to the table
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Get the selected account and username
+                    String accountValue = (String) table.getValueAt(selectedRow, 0);
+                    String userNameValue = (String) table.getValueAt(selectedRow, 1);
+                    String passWordValue = (String) table.getValueAt(selectedRow, 2);
+                    try {
+                        // Fetch and display the password of the selected record
+                        Record r = db.getRecord(accountValue, userNameValue);
 
-        // Create the table using the default table model
-        JTable table = new JTable(model);
+                        String newAccount = JOptionPane.showInputDialog("Current Account:" + r.getAccount()+ (" (leave blank if no change)"));
+                        if (!newAccount.isBlank()){
+                           accountValue = newAccount;
+                        }
 
-        // Creating the selection listener that will refer the clicked row
-        ListSelectionListener ls = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    if (selectedRow != -1) {
-                        String accountValue = (String) table.getValueAt(selectedRow, 0);
-                        String userNameValue = (String) table.getValueAt(selectedRow, 1);
-                        System.out.println("Selected Account: " + accountValue);
-                        System.out.println("Selected Username: " + userNameValue);
-                        account_tf.setText(accountValue);
-                        userName_tf.setText(userNameValue);
+                        String newUsername = JOptionPane.showInputDialog("Current Username:" + r.getUserName() + (" (leave blank if no change)"));
+                        if (!newUsername.isBlank()){
+                            userNameValue = newUsername;
+                        }
 
+                        String newPassword = JOptionPane.showInputDialog("Current Password: " + r.getPassword() + (" (leave blank if no change)"));
+                        if (!newPassword.isBlank()){
+                            passWordValue = newPassword;
+                        }
+
+                        db.updateRecord(new Record(accountValue, userNameValue, passWordValue));
+                        JOptionPane.showMessageDialog(this, "Record updated successfully.", "Update", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (SQLException ex) {
+                        // Show error message if there's an issue fetching the record
+                        JOptionPane.showMessageDialog(this, "Error fetching record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             }
-        };
+        });
 
-        // Add a ListSelectionListener to the table
-        ListSelectionModel selectionModel = table.getSelectionModel();
-        selectionModel.addListSelectionListener(ls);
         return table;
     }
 
+    // Method to refresh the data in the table
+    public DefaultTableModel refreshTableData() {
+        try {
+            // Fetch updated records from the database
+            ArrayList<Record> recordList = db.getAllRecords();
+            String[][] data;
+            data = new String[recordList.size()][3];
+            for (int i = 0; i < recordList.size(); i++) {
+                data[i][0] = recordList.get(i).getAccount();
+                data[i][1] = recordList.get(i).getUserName();
+                data[i][2] = "*".repeat((recordList.get(i).getPassword()).length());
+
+            }
+            // Update the table model with new data
+            String[] columnNames = {"Account", "Username", "Password"};
+            return new DefaultTableModel(data, columnNames);
+
+        } catch (SQLException ex) {
+            // Show error message if there's an issue refreshing the data
+            JOptionPane.showMessageDialog(this, "Error refreshing data: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 
 }

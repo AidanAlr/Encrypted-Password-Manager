@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
 public class DatabaseManager {
+    // File name for the SQLite database
     public static String filename = "userdata";
 
+    // Connection object for the database
     public static Connection sqlConnection;
 
     static {
@@ -22,90 +23,104 @@ public class DatabaseManager {
         }
     }
 
-    public DatabaseManager() throws SQLException{
-        try {
-            if (sqlConnection != null){
-            System.out.println("Connected to " + filename);
-            this.createTable();
-            }
+    ;
 
-        }
-        catch (SQLException e) {
+    public DatabaseManager() throws SQLException {
+        try {
+            // Establishes a connection to the database
+            // If connection is successful, create the table
+            if (sqlConnection != null && !passwordsTableExists()) {
+                this.createTable();
+            }
+        } catch (SQLException e) {
             System.out.println(e);
-            System.out.println("DB not found");
+            System.out.println("Database not found");
         }
     }
 
+    public boolean passwordsTableExists() throws SQLException {
+        String query = "SELECT name FROM sqlite_master WHERE type='table' AND name='passwords'";
+        Statement stmt = sqlConnection.createStatement();
+        ResultSet results = stmt.executeQuery(query);
+        return results.next();
+    }
+
+    // Method to create the passwords table if it doesn't exist
     private void createTable() throws SQLException {
-        String table = "CREATE TABLE IF NOT EXISTS passwords(" +
-                "account TEXT PRIMARY KEY NOT NULL," +
+        // SQL statement for creating a new table
+        String table = "CREATE TABLE IF NOT EXISTS passwords (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "account TEXT NOT NULL," +
                 "username TEXT NOT NULL," +
                 "password TEXT NOT NULL)";
         try {
             Statement stmt = sqlConnection.createStatement();
             stmt.executeUpdate(table);
             stmt.close();
-            System.out.println("passwords table created");
-        }
-        catch (SQLException e) {
+            System.out.println("Created table");
+        } catch (SQLException e) {
             System.out.println(e);
-            System.out.println("Found passwords table");
         }
     }
 
-    public void addNewPassword(Record record) throws SQLException {
+    // Method to add a new record to the database
+    public void addNewRecord(Record record) throws SQLException {
+        // SQL query for inserting a new record
         String query = "INSERT INTO passwords (account, username, password) VALUES (?, ?, ?)";
         try (PreparedStatement insert = sqlConnection.prepareStatement(query)) {
             insert.setString(1, record.getAccount());
             insert.setString(2, record.getUserName());
-            insert.setString(3, record.getPassword());
+            insert.setString(3, EncryptionHelper.encrypt(record.getPassword()));
             insert.executeUpdate();
-            System.out.println("Password added");
+            System.out.println("Added new Record");
         } catch (SQLException e) {
             System.out.println(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
     }
 
-    public Record getPasswords(String userName) throws SQLException {
+    // Method to fetch a specific record based on account and username
+    public Record getRecord(String account, String userName) throws Exception {
+        String query = "SELECT * from passwords where account = ? and username = ?";
+        PreparedStatement stmt = sqlConnection.prepareStatement(query);
+        stmt.setString(1, account);
+        stmt.setString(2, userName);
 
-        ResultSet results;
+        ResultSet results = stmt.executeQuery();
 
-        String query = "SELECT * from passwords where username = ?";
+        if (results.next()) {
+            String name = results.getString("USERNAME");
+            String password = EncryptionHelper.decrypt(results.getString("PASSWORD"));
+            account = results.getString("ACCOUNT");
 
-        PreparedStatement getPassword = sqlConnection.prepareStatement(query);
-        getPassword.setString(1, userName);
-
-        results = getPassword.executeQuery();
-
-        String name = results.getString("USERNAME");
-        String password = results.getString("PASSWORD");
-        String account = results.getString("ACCOUNT");
-
-        getPassword.closeOnCompletion();
-        return new Record(account, userName, password);
+            stmt.closeOnCompletion();
+            System.out.println("Found queried record");
+            return new Record(account, userName, password);
+        } else {
+            stmt.closeOnCompletion();
+            return null; // Return null if no record is found
+        }
     }
 
-    public ArrayList<Record> getAllRecords() throws SQLException {
+    // Method to fetch all records from the database
+    public ArrayList<Record> getAllRecords() throws Exception {
         ArrayList<Record> passwordsArrayList = new ArrayList<>();
         String query = "SELECT * FROM passwords";
         PreparedStatement getPasswords = sqlConnection.prepareStatement(query);
         ResultSet results = getPasswords.executeQuery();
-        System.out.println(results);
 
         while (results.next()) {
             String account = results.getString("ACCOUNT");
             String name = results.getString("USERNAME");
             String password = results.getString("PASSWORD");
             Record row = new Record(account, name, password);
-            System.out.println(row);
-
             passwordsArrayList.add(row);
         }
 
+        System.out.println("Collected All Records");
         return passwordsArrayList;
     }
-
 
     public void storePasswords(ArrayList<Record> records) throws SQLException {
         PreparedStatement storePasswords;
@@ -124,7 +139,6 @@ public class DatabaseManager {
     public void removePassword(String account) throws SQLException {
         String query = "DELETE FROM passwords where account= ?";
         PreparedStatement removePassword = sqlConnection.prepareStatement(query);
-
         removePassword.setString(1, account);
         removePassword.executeUpdate();
         removePassword.close();
@@ -146,7 +160,7 @@ public class DatabaseManager {
         clear.close();
     }
 
-    public void updatePassword(Record newP) throws SQLException {
+    public void updateRecord(Record newP) throws SQLException {
         PreparedStatement update;
         String query = "UPDATE passwords set password = ? where username = ? and account = ?";
         update = sqlConnection.prepareStatement(query);
@@ -155,6 +169,7 @@ public class DatabaseManager {
         update.setString(3, newP.getAccount());
 
         update.executeUpdate();
+        System.out.println("Updated Record");
     }
 
     public void closeDatabase() throws SQLException {
