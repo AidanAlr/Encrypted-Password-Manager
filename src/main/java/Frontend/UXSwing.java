@@ -4,6 +4,7 @@ import Backend.DatabaseManager;
 import Backend.Record;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ public class UXSwing {
     private MyTablePanel myTablePanel;
     private JButton RNGButton;
     private JButton newButton;
+    private JButton deleteButton;
     private final DatabaseManager db = new DatabaseManager();
 
     private void createUIComponents() throws SQLException {
@@ -35,15 +37,30 @@ public class UXSwing {
             // Lambda expression that calls the method
             RNGButton.addActionListener(this::rngAction);
             newButton.addActionListener(this::newAction);
+            deleteButton.addActionListener(this::deleteAction);
+
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(main, "Error initializing UI components: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void deleteAction(ActionEvent event){
+        String account = JOptionPane.showInputDialog("Please enter the account you would like deleted:");
+        if (account != null && !account.isEmpty()) {
+            try {
+                db.removeRecord(account);
+                myTablePanel.myTable.setModel(myTablePanel.getTableModel());
+                JOptionPane.showMessageDialog(this.getMainPanel(), "Record deleted successfully.", "Delete", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(main, "Error deleting record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     private void rngAction(ActionEvent e) {
         String account = JOptionPane.showInputDialog("Enter Account Name:");
         String userName = JOptionPane.showInputDialog("Enter Username:");
-        int size = Integer.parseInt(JOptionPane.showInputDialog("Enter Password Length:"));
+        int size = Integer.parseInt(JOptionPane.showInputDialog("Enter length of RNG password:"));
         if (account != null && userName != null && size != 0) {
             // Arraylist to store temp password
             ArrayList<Character> temp = new ArrayList<Character>(size);
@@ -68,7 +85,8 @@ public class UXSwing {
             try {
                 Record r = new Record(account, userName, str);
                 db.addNewRecord(r);
-                myTablePanel.refreshTableData();
+//              // This should refresh the table
+                myTablePanel.myTable.setModel(myTablePanel.getTableModel());
                 JOptionPane.showMessageDialog(this.getMainPanel(), "Record updated successfully.", "Update", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(main, "Error creating new record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -86,7 +104,7 @@ public class UXSwing {
             try {
                 Record newRecord = new Record(account, username, password);
                 db.addNewRecord(newRecord);
-                myTablePanel.refreshTableData();
+                myTablePanel.myTable.setModel(myTablePanel.getTableModel());
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(main, "Error creating new record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }

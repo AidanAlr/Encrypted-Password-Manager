@@ -55,6 +55,13 @@
                   <text value="New Record with RNG password"/>
                 </properties>
               </component>
+              <component id="650c" class="javax.swing.JButton" binding="deleteButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <font name="Fira Code"/>
+                  <text value="Delete"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>

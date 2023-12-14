@@ -22,7 +22,6 @@ public class Record {
     private String password;
     private String account;
 
-
     public String getPassword() {
         return this.password;
     }
@@ -46,11 +45,6 @@ public class Record {
 
 
     public Record(String account, String userName, String password){
-        if (userName.isEmpty() || password.isEmpty() || account.isEmpty()) {
-            throw new IllegalArgumentException("Blank fields are not allowed");
-        }
-        if(userName.contains(" ") || password.contains(" ")){
-            throw new IllegalArgumentException("Password name cannot contain whitespace");}
         this.userName = userName;
         this.password = password;
         this.account = account;

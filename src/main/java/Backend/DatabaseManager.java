@@ -82,7 +82,7 @@ public class DatabaseManager {
 
     // Method to fetch a specific record based on account and username
     public Record getRecord(String account, String userName) throws Exception {
-        String query = "SELECT * from passwords where account = ? and username = ?";
+        String query = "SELECT * from passwords where account = ? and username = ? LIMIT 1";
         PreparedStatement stmt = sqlConnection.prepareStatement(query);
         stmt.setString(1, account);
         stmt.setString(2, userName);
@@ -122,29 +122,30 @@ public class DatabaseManager {
         return passwordsArrayList;
     }
 
-    public void storePasswords(ArrayList<Record> records) throws SQLException {
-        PreparedStatement storePasswords;
+    public void storeRecords(ArrayList<Record> records) throws SQLException {
+        PreparedStatement stmt;
         String query = "INSERT INTO passwords (account, username,password) VALUES(?, ?, ?)";
-        storePasswords = sqlConnection.prepareStatement(query);
+        stmt = sqlConnection.prepareStatement(query);
         for (Record p : records) {
-            storePasswords.setString(1, p.getAccount());
-            storePasswords.setString(2, p.getUserName());
-            storePasswords.setString(3, p.getPassword());
-            storePasswords.executeUpdate();
+            stmt.setString(1, p.getAccount());
+            stmt.setString(2, p.getUserName());
+            stmt.setString(3, p.getPassword());
+            stmt.executeUpdate();
         }
-        if (storePasswords != null)
-            storePasswords.close();
+        if (stmt != null)
+            stmt.close();
     }
 
-    public void removePassword(String account) throws SQLException {
+    public void removeRecord(String account) throws SQLException {
         String query = "DELETE FROM passwords where account= ?";
         PreparedStatement removePassword = sqlConnection.prepareStatement(query);
         removePassword.setString(1, account);
         removePassword.executeUpdate();
         removePassword.close();
+        System.out.println("removed record with account: " + account);
     }
 
-    public void renameRecord(String oldName, String newName) throws SQLException {
+    public void updateAccount(String oldName, String newName) throws SQLException {
         PreparedStatement renamePassword;
         String query = "UPDATE passwords set account = ? where account = ?";
         renamePassword = sqlConnection.prepareStatement(query);
@@ -152,24 +153,33 @@ public class DatabaseManager {
         renamePassword.setString(2, oldName);
         renamePassword.executeUpdate();
         renamePassword.close();
+        System.out.println("Updated account");
     }
 
-    public void clearPasswords() throws SQLException {
+    public void clearRecords() throws SQLException {
         PreparedStatement clear = sqlConnection.prepareStatement("DELETE FROM passwords");
         clear.executeUpdate();
         clear.close();
     }
 
-    public void updateRecord(Record newP) throws SQLException {
+    public void updatePassword(String account, String newP) throws SQLException {
         PreparedStatement update;
-        String query = "UPDATE passwords set password = ? where username = ? and account = ?";
+        String query = "UPDATE passwords set password = ? where account = ?";
         update = sqlConnection.prepareStatement(query);
-        update.setString(1, newP.getPassword());
-        update.setString(2, newP.getUserName());
-        update.setString(3, newP.getAccount());
-
+        update.setString(1, newP);
+        update.setString(2, account);
         update.executeUpdate();
-        System.out.println("Updated Record");
+        System.out.println("Updated password");
+    }
+
+    public void updateUsername(String account, String username) throws SQLException {
+        PreparedStatement update;
+        String query = "UPDATE passwords set username = ? where account = ?";
+        update = sqlConnection.prepareStatement(query);
+        update.setString(1, username);
+        update.setString(2, account);
+        update.executeUpdate();
+        System.out.println("Updated username");
     }
 
     public void closeDatabase() throws SQLException {
