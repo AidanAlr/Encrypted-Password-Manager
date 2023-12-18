@@ -9,14 +9,14 @@ public class AutoDisappearPopup extends JComponent {
     private JLabel messageLabel;
     private final int displayTime;
 
-    public AutoDisappearPopup(JFrame parentFrame, String title, String Message, int width, int height, int displayTimeInMillis) {
+    public AutoDisappearPopup(JFrame parentFrame, String title, String Message, int displayTimeInMillis) {
         this.displayTime = displayTimeInMillis;
-        initializeDialog(parentFrame, title, Message, width, height);
+        initializeDialog(parentFrame, title, Message);
     }
 
-    private void initializeDialog(JFrame parentFrame, String title, String message, int width, int height) {
+    private void initializeDialog(JFrame parentFrame, String title, String message) {
         dialog = new JDialog(parentFrame, title, false);
-        dialog.setSize(width, height);
+        dialog.setSize(500, 100);
         dialog.setLocationRelativeTo(parentFrame);
 
         // Initialize and add the message label

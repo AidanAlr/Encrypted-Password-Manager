@@ -1,4 +1,4 @@
-Ensure that the key.txt file contains a 16bit key suitable for AES such as "123456789101112"
+Ensure that the key.txt file in the resources folder contains a 16bit key suitable for AES such as "123456789101112"
 Run the program.
 Create a new record with the New Record button, enter an account name, username and password when prompted.
 Upon completion, a popup will appear that tells you your record was added successfully.

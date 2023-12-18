@@ -77,8 +77,6 @@ public class UXSwing {
                             (JFrame) SwingUtilities.getWindowAncestor(main),
                             "Update",
                             "Record updated successfully.",
-                            500,
-                            100,
                             1000
                     );
                     popup.showDialog();
@@ -120,8 +118,6 @@ public class UXSwing {
                         (JFrame) SwingUtilities.getWindowAncestor(main),
                         "Update",
                         "Record deleted successfully.",
-                        500,
-                        100,
                         1000
                 );
                 popup.showDialog();
@@ -184,8 +180,6 @@ public class UXSwing {
                         (JFrame) SwingUtilities.getWindowAncestor(main),
                         "Update",
                         "Record added successfully.",
-                        500,
-                        100,
                         1000
                 );
                 popup.showDialog();

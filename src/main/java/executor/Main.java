@@ -13,7 +13,7 @@ public class Main {
         UXSwing ux = new UXSwing();
         frame.setContentPane(ux.getMainPanel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
+        frame.setSize(550, 400);
         frame.setVisible(true);
     }
     }

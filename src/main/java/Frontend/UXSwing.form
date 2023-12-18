@@ -59,7 +59,7 @@
                 <constraints/>
                 <properties>
                   <font name="Fira Code"/>
-                  <text value="Delete"/>
+                  <text value="Delete Record"/>
                 </properties>
               </component>
             </children>
