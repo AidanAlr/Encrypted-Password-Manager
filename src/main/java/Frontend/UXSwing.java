@@ -82,7 +82,6 @@ public class UXSwing {
                             1000
                     );
                     popup.showDialog();
-//                    JOptionPane.showMessageDialog(table1, "Record updated successfully.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException ex) {
                     // Show error message if there's an issue fetching the record
                     JOptionPane.showMessageDialog(table1, "Error fetching record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
@@ -117,7 +116,15 @@ public class UXSwing {
             try {
                 db.removeRecord(account);
                 refreshTable();
-                JOptionPane.showMessageDialog(this.getMainPanel(), "Record deleted successfully.", "Delete", JOptionPane.INFORMATION_MESSAGE);
+                AutoDisappearPopup popup = new AutoDisappearPopup(
+                        (JFrame) SwingUtilities.getWindowAncestor(main),
+                        "Update",
+                        "Record deleted successfully.",
+                        500,
+                        100,
+                        1000
+                );
+                popup.showDialog();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(main, "Error deleting record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -173,6 +180,15 @@ public class UXSwing {
                 Record newRecord = new Record(account, username, password);
                 db.addNewRecord(newRecord);
                 refreshTable();
+                AutoDisappearPopup popup = new AutoDisappearPopup(
+                        (JFrame) SwingUtilities.getWindowAncestor(main),
+                        "Update",
+                        "Record added successfully.",
+                        500,
+                        100,
+                        1000
+                );
+                popup.showDialog();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(main, "Error creating new record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
