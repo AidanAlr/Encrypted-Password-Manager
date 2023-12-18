@@ -4,6 +4,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -11,8 +12,9 @@ import java.util.Base64;
 
 public class EncryptionHelper {
 
-    // Default encryption key
-    public static String key = "1234567891011121";
+    public static String getKey() throws IOException {
+        return TextReader.readTextFile("src/main/resources/key.txt");
+    }
 
     // Method to generate a random encryption key
     public static String generateKey(int keySize) {
@@ -25,7 +27,7 @@ public class EncryptionHelper {
     // Method to encrypt data using AES
     public static String encrypt(String data) throws Exception {
         // Create a secret key from the encryption key
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(getKey().getBytes("UTF-8"), "AES");
 
         // Generate a random Initialization Vector (IV)
         byte[] iv = new byte[16];
@@ -63,7 +65,7 @@ public class EncryptionHelper {
             System.arraycopy(combined, iv.length, encryptedBytes, 0, encryptedSize);
 
             // Create a secret key from the encryption key
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(getKey().getBytes("UTF-8"), "AES");
 
             // Initialize the AES cipher for decryption
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");

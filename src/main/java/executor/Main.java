@@ -1,6 +1,7 @@
 package executor;
 
 import Backend.DatabaseManager;
+import Backend.TextReader;
 import Frontend.UXSwing;
 
 import javax.swing.*;
@@ -8,10 +9,7 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame("Password Manager");
-        frame.setIconImage(new ImageIcon("src/main/resources/icon.png").getImage());
-        DatabaseManager db = new DatabaseManager();
-//        db.clearPasswords();
+        JFrame frame = new JFrame("Encrypted Password Manager by Aidan");
         UXSwing ux = new UXSwing();
         frame.setContentPane(ux.getMainPanel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,0 +1,6 @@
+Database to store user information(account, username, password)
+Database Manager class which will provide utility to interact with database (i.e. get records, clear records, update record etc.)
+Record class which we can represent a row in the database, allows us to more easily work with database data
+Encrypted passwords – sensitive data such as passwords should not be stored in raw format they should be encrypted
+Frontend GUI for user interaction.
+Random Password Generator

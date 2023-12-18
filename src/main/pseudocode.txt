@@ -1,0 +1,33 @@
+Database Manager
+Static method to connect to the database
+Method to create table in the database
+Method to add row to the table
+Method to update row in the table
+Method to delete row from the table
+Method to get row from the table
+Method to get all rows from the table
+
+EncryptionHelper
+Method to encrypt string
+Method to decrypt string
+
+Record
+Class that represents a row in the table
+Attributes are the columns in the table: Account, username, password
+Methods to get and set attributes
+
+TextReader
+Method to read text file
+Will be used to read the encryption key
+
+Frontend
+3 buttons: New, New with RNG password, Delete
+New: Create new record - Option panes to enter account, username, password
+New: Create new record with generated password - Option panes to enter account, username, password length
+Delete: Delete record - Option pane to enter account
+Popups to notify you of your actions
+Table that represents the database - select row to view/edit account, username and password
+
+Resources
+key.txt will store the 16bit encryption key
+user data stored in database

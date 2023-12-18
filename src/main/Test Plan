@@ -1,0 +1,8 @@
+Ensure that the key.txt file contains a 16bit key suitable for AES such as "123456789101112"
+Run the program.
+Create a new record with the New Record button, enter an account name, username and password when prompted.
+Upon completion, a popup will appear that tells you your record was added successfully.
+You will see the record in the table, this means that it has been stored in the database.
+To edit/view this record click on the file and you will be prompted with popups that specify your current details and allow you to edit them.
+To delete a record, click on the delete button and enter the account name of the reocrd you wish to delete.
+You are also able to create a record with a rng password, to do this click the New record with rng password button and enter the account name, username and length of password that you would like.
