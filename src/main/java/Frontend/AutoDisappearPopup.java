@@ -14,13 +14,13 @@ public class AutoDisappearPopup extends JComponent {
         initializeDialog(parentFrame, title, Message, width, height);
     }
 
-    private void initializeDialog(JFrame parentFrame, String title, String initialMessage, int width, int height) {
+    private void initializeDialog(JFrame parentFrame, String title, String message, int width, int height) {
         dialog = new JDialog(parentFrame, title, false);
         dialog.setSize(width, height);
         dialog.setLocationRelativeTo(parentFrame);
 
         // Initialize and add the message label
-        messageLabel = new JLabel(initialMessage, SwingConstants.CENTER);
+        messageLabel = new JLabel(message, SwingConstants.CENTER);
         dialog.add(messageLabel);
     }
 
