@@ -17,3 +17,6 @@ Passwords are encrypted using AES and stored in a SQLite database.
 ## GUI
 ![UI.png](UI.png)
 
+## UML
+![image](https://github.com/AidanAlr/EncryptedPasswordManager/assets/112656616/18cfd060-8c42-40bc-9206-bb383dd28e2e)
+
